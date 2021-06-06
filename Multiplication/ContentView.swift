@@ -82,7 +82,7 @@ struct ContentView: View {
               Button("Submit") {
                 checkAnswer()
               }
-              .disabled(gameCompleted)
+              .disabled(gameCompleted || answerChoice.isEmpty)
             }
             if gameCompleted {
               Section(header: Text("Score")) {
@@ -132,6 +132,8 @@ struct ContentView: View {
   }
   
   func checkAnswer() {
+    guard !answerChoice.isEmpty else { return }
+
     if let userChoice = Int(answerChoice) {
       if userChoice == answer {
         correct = true
