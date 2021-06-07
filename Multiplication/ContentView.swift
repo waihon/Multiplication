@@ -22,6 +22,7 @@ struct ContentView: View {
   @State private var answer = 0
   @State private var correct = false
   @State private var answerChoice = ""
+  @State private var questions: [(multiplicant: Int, multiplier: Int)] = []
   // User input
   @State private var tablesChoice = 6
   @State private var questionsChoice = 0
@@ -37,22 +38,14 @@ struct ContentView: View {
       return Int(choice)!
     }
   }
-  
-  var randomMultiplicant: Int {
-    Array(1...tablesChoice).randomElement()!
-  }
-  
-  var randomMultiplier: Int {
-    multipliers.randomElement()!
-  }
-  
+   
   var body: some View {
     Group {
       if isSettings {
         NavigationView {
           Form {
             Section(header: Text("Which Multiplication Tables to Practice?")) {
-              Stepper(value: $tablesChoice, in: 1 ... 12, step: 1) {
+              Stepper(value: $tablesChoice, in: 2 ... 12, step: 1) {
                 Text("Up to \(tablesChoice)")
               }
             }
@@ -114,6 +107,13 @@ struct ContentView: View {
     score = 0
     questionNumber = 0
     
+    questions = []
+    for i in 1 ... tablesChoice {
+      for j in 1 ... 12 {
+        questions.append((multiplicant: i, multiplier: j))
+      }
+    }
+    
     nextQuestion()
   }
   
@@ -121,8 +121,10 @@ struct ContentView: View {
     questionNumber += 1
     
     if questionNumber <= numberOfQuestions {
-      multiplicant = randomMultiplicant
-      multiplier = randomMultiplier
+      let index = questions.indices.randomElement()!
+      let questionTuple = questions.remove(at: index)
+      multiplicant = questionTuple.multiplicant
+      multiplier = questionTuple.multiplier
       answer = multiplicant * multiplier
       correct = false
       answerChoice = ""
